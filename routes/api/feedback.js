@@ -1,0 +1,10 @@
+const express=require('express');
+const path=require('path');
+const verifyJWT=require('../../middleware/verifyJWT');
+const router=express.Router();
+const feedbackcontroller=require('../../logcontroller/feedbackcontroller');
+const feedback = require('../../model/feedback');
+router.post('/', verifyJWT,feedbackcontroller.createreview);
+router.get('/',feedbackcontroller.getAllReviews);
+router.get('/userreview', verifyJWT,feedbackcontroller.getUserReviews);
+module.exports=router;
