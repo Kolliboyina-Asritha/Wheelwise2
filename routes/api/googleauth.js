@@ -64,9 +64,9 @@ router.post('/auth/google', async (req, res) => {
     // Set cookie
     res.cookie('jwt', refreshToken, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      sameSite: 'Lax' // for localhost testing
-      // secure: true, // use this in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000, 
+      sameSite: 'None', 
+       secure: true
     });
 
     const redirectTo =
