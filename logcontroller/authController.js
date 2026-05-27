@@ -38,9 +38,9 @@ const handleLogin=async (req,res)=>{
         
         res.cookie('jwt', refreshToken, {
          httpOnly: true,
-        
+        secure:true,
          maxAge: 24*60*60*1000, // 10 minutes
-         sameSite: 'Lax'
+         sameSite: 'None'
         });//If you're testing locally (e.g., http://localhost:3000), secure: true and sameSite: 'none' will silently block the cookie.
 
         const redirectTo = foundUser.roles?.Seller === ROLES_LIST.Seller
