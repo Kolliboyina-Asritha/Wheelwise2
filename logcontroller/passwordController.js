@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../model/userd');
 const transporter = require('../utils/mailer');
+const sgMail = require('../utils/sendGrid');
 
 const CLIENT_URL = process.env.CLIENT_URL;
 const JWT_SECRET_RESET = process.env.JWT_SECRET_RESET;
@@ -48,17 +49,17 @@ exports.forgotPassword = async (req, res) => {
 
     // Send Reset Email
     console.log('📧 Attempting to send reset email to:', email);
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Password Reset Request',
-      html: `
-        <p>Hello ${user.firstname},</p>
-        <p>You requested to reset your password. Click the link below to continue:</p>
-        <a href="${resetLink}">${resetLink}</a>
-        <p>This link will expire in 15 minutes.</p>
-      `
-    });
+   await sgMail.send({
+  to: email,
+  from: process.env.EMAIL_USER, // must be verified in SendGrid
+  subject: 'Password Reset Request',
+  html: `
+    <p>Hello ${user.firstname},</p>
+    <p>You requested to reset your password.</p>
+    <a href="${resetLink}">${resetLink}</a>
+    <p>This link will expire in 15 minutes.</p>
+  `
+});
     console.log('✅ Reset email sent successfully to:', email);
 
     res.status(200).json({ message: 'Reset link sent to your email' });
