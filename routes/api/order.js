@@ -102,6 +102,29 @@ if (!validFlow[current].includes(status)) {
 
         order.cancelReason =
           req.body.reason || 'Cancelled by seller';
+         if (
+    order.paymentMethod === 'RAZORPAY' &&
+    order.paymentStatus === 'paid' &&
+    order.razorpayPaymentId
+  ) {
+    try {
+      const refund = await razorpay.payments.refund(
+        order.razorpayPaymentId,
+        {
+          amount: Math.round(order.totalAmount * 100)
+        }
+      );
+
+      console.log('✅ Seller Refund Success:', refund.id);
+
+      order.refundStatus = 'processed';
+      order.refundId = refund.id;
+
+    } catch (err) {
+      console.error('❌ Seller Refund Failed:', err);
+      order.refundStatus = 'pending';
+    }
+  }
       }
 
       if (status === 'delivered') {
